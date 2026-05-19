@@ -25,7 +25,6 @@
         }
         
         body { 
-            /* Hình nền độc quyền của quán đã được chuyển sang link hiển thị trực tiếp */
             background: url('https://lh3.googleusercontent.com/d/1v6vKj3kzfwbv_YUfheA-F3XTVmJTafMl') fixed center/cover no-repeat;
             color: var(--text-dark); 
             padding-bottom: 140px; 
@@ -245,6 +244,34 @@
         .option-item { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: var(--text-dark); cursor: pointer; }
         .option-item input { width: 19px; height: 19px; accent-color: var(--primary-brown); cursor: pointer; }
 
+        /* FORM INPUT STYLES */
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-group label {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--primary-brown);
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(92, 37, 9, 0.2);
+            border-radius: 12px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.6);
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .form-control:focus {
+            border-color: var(--header-bg);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.15);
+        }
+
         /* FIXED BOTTOM CART BAR */
         .cart-bar { 
             position: fixed; 
@@ -270,7 +297,7 @@
         .total-amount { font-size: 24px; font-weight: 800; color: var(--price-red); }
         
         .btn-order { 
-            background: linear-gradient(135deg, #0068ff 0%, #0053cc 100%); 
+            background: linear-gradient(135deg, #0084ff 0%, #0066cc 100%); /* Màu xanh Messenger thương hiệu */
             color: white; 
             border: none; 
             padding: 14px 28px; 
@@ -278,10 +305,10 @@
             border-radius: 50px; 
             cursor: pointer; 
             font-size: 14.5px; 
-            box-shadow: 0 6px 16px rgba(0,104,255,0.3); 
+            box-shadow: 0 6px 16px rgba(0,132,255,0.3); 
             transition: all 0.2s ease;
         }
-        .btn-order:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,104,255,0.4); }
+        .btn-order:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,132,255,0.4); }
         .btn-order:active { transform: translateY(1px); }
     </style>
 </head>
@@ -395,6 +422,31 @@
             </div>
         </div>
 
+        <div class="option-section">
+            <h4>🧊 LỰA CHỌN ĐÁ CHO ĐỒ UỐNG:</h4>
+            <div class="option-grid">
+                <label class="option-item"><input type="radio" name="ice_option" value="Đá chung (Bỏ đá vào ly)" checked> Đá chung (Bỏ vào ly)</label>
+                <label class="option-item"><input type="radio" name="ice_option" value="Đá riêng (Để bịch đá riêng)"> Đá riêng (Để bịch riêng)</label>
+                <label class="option-item"><input type="radio" name="ice_option" value="Không đá"> Không lấy đá</label>
+            </div>
+        </div>
+
+        <div class="option-section">
+            <h4>🚚 THÔNG TIN GIAO HÀNG:</h4>
+            <div class="form-group">
+                <label for="cust-name">Tên khách hàng:</label>
+                <input type="text" id="cust-name" class="form-control" placeholder="Ví dụ: Nguyễn Văn A">
+            </div>
+            <div class="form-group">
+                <label for="cust-phone">Số điện thoại nhận hàng (*):</label>
+                <input type="tel" id="cust-phone" class="form-control" placeholder="Ví dụ: 0901234567">
+            </div>
+            <div class="form-group">
+                <label for="cust-address">Địa chỉ giao hàng (*):</label>
+                <input type="text" id="cust-address" class="form-control" placeholder="Số nhà, tên đường, phường/xã...">
+            </div>
+        </div>
+
         <div class="option-section" style="margin-bottom: 40px;">
             <h4>🍡 Thêm Topping:</h4>
             <div class="option-grid">
@@ -415,11 +467,12 @@
             <p class="total-label">Tổng tạm tính</p>
             <p id="total-price" class="total-amount">0đ</p>
         </div>
-        <button class="btn-order" onclick="sendZalo()">Gửi đơn qua Zalo</button>
+        <button class="btn-order" onclick="sendMessenger()">Gửi đơn qua Fanpage</button>
     </div>
 
     <script>
-        const PHONE_ZALO = "84966976322"; 
+        // Đã cập nhật đúng ID Fanpage chính thức của Pataca Cafe
+        const FB_PAGE_ID = "Pataca.Cafe"; 
 
         function switchTab(tabId, btn) {
             document.querySelectorAll('.category-section').forEach(section => section.classList.remove('active'));
@@ -451,34 +504,61 @@
             document.getElementById('total-price').innerText = total.toLocaleString('vi-VN') + 'đ';
         }
 
-        function sendZalo() {
-            let text = "☕ ĐƠN HÀNG MỚI ĐẶT ONLINE:\n";
-            text += "=========================\n\n";
+        function sendMessenger() {
             let hasItem = false;
-            let total = 0;
-
             document.querySelectorAll('.product-card').forEach(card => {
-                const name = card.getAttribute('data-name');
-                const price = parseInt(card.getAttribute('data-price'));
                 const qty = parseInt(card.querySelector('.qty-val').innerText);
-                
-                if (qty > 0) {
-                    hasItem = true;
-                    let itemTotal = price * qty;
-                    text += `▪️ ${name}\n`;
-                    text += `  Chi tiết: ${qty} ly x ${price.toLocaleString('vi-VN')}đ\n`;
-                    text += `  Thành tiền: ${itemTotal.toLocaleString('vi-VN')}đ\n\n`;
-                    total += itemTotal;
-                }
+                if (qty > 0) hasItem = true;
             });
 
             if (!hasItem) {
-                alert("Bạn ơi, vui lòng tăng số lượng món nước mong muốn trước khi gửi đơn nhé!");
+                alert("Bạn ơi, vui lòng chọn số lượng món nước mong muốn trước khi gửi đơn nhé!");
+                return;
+            }
+
+            const name = document.getElementById('cust-name').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+            const address = document.getElementById('cust-address').value.trim();
+
+            if (!phone) {
+                alert("Vui lòng điền Số điện thoại để quán liên hệ giao hàng ạ!");
+                document.getElementById('cust-phone').focus();
+                return;
+            }
+            if (!address) {
+                alert("Vui lòng điền Địa chỉ để shipper giao món đến tận nơi ạ!");
+                document.getElementById('cust-address').focus();
                 return;
             }
 
             const selectedSweet = document.querySelector('input[name="sweetness"]:checked').value;
-            text += `🍬 MỨC ĐỘ NGỌT GỌI: ${selectedSweet}\n\n`;
+            const selectedIce = document.querySelector('input[name="ice_option"]:checked').value;
+
+            // Xây dựng hóa đơn chi tiết gửi đến Fanpage
+            let text = "☕ ĐƠN HÀNG MỚI ĐẶT ONLINE:\n";
+            text += "=========================\n\n";
+            text += "📦 [THÔNG TIN KHÁCH HÀNG]\n";
+            text += ` 👤 Tên: ${name ? name : "Khách vãng lai"}\n`;
+            text += ` 📞 SĐT: ${phone}\n`;
+            text += ` 📍 Giao tại: ${address}\n`;
+            text += ` 🍬 Mức ngọt: ${selectedSweet}\n`;
+            text += ` 🧊 Loại đá: ${selectedIce}\n\n`;
+            text += "-------------------------\n";
+            text += "📋 [CHI TIẾT MÓN ĐẶT]\n";
+
+            let total = 0;
+            document.querySelectorAll('.product-card').forEach(card => {
+                const pName = card.getAttribute('data-name');
+                const price = parseInt(card.getAttribute('data-price'));
+                const qty = parseInt(card.querySelector('.qty-val').innerText);
+                
+                if (qty > 0) {
+                    let itemTotal = price * qty;
+                    text += ` ▪️ ${pName} (x${qty})\n`;
+                    text += `   ↳ Giá: ${price.toLocaleString('vi-VN')}đ → Tổng: ${itemTotal.toLocaleString('vi-VN')}đ\n`;
+                    total += itemTotal;
+                }
+            });
 
             let toppingText = "";
             document.querySelectorAll('.cb-topping:checked').forEach(cb => {
@@ -488,15 +568,23 @@
                 total += tPrice;
             });
             if (toppingText !== "") {
-                text += "🍬 TOPPING CHỌN THÊM:\n" + toppingText + "\n";
+                text += "\n🍡 [TOPPING CHỌN THÊM]\n" + toppingText;
             }
 
-            text += "=========================\n";
+            text += "\n=========================\n";
             text += `💰 TỔNG CỘNG ĐƠN HÀNG: ${total.toLocaleString('vi-VN')}đ\n\n`;
-            text += "Quán kiểm tra đơn, phản hồi thời gian giao hàng giúp mình nhé! Cảm ơn quán! 🥰";
+            text += "Quán kiểm tra đơn và phản hồi cho mình nhé!";
 
-            const url = `https://zalo.me/${PHONE_ZALO}?text=${encodeURIComponent(text)}`;
-            window.open(url, '_blank');
+            // Tự động sao chép văn bản vào bộ nhớ tạm (Clipboard) trước khi mở link chat m.me
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Đã sao chép hóa đơn thành công! Hệ thống đang chuyển hướng tới Messenger của Fanpage Pataca Cafe. Bạn chỉ cần nhấn giữ ô nhập tin nhắn -> chọn 'Dán' (Paste) và gửi đơn đi là xong ạ!");
+                const url = `https://m.me/${FB_PAGE_ID}`;
+                window.open(url, '_blank');
+            }).catch(err => {
+                // Phương án dự phòng nếu trình duyệt/thiết bị chặn quyền tự động sao chép
+                const url = `https://m.me/${FB_PAGE_ID}`;
+                window.open(url, '_blank');
+            });
         }
     </script>
 </body>
