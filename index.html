@@ -94,6 +94,11 @@
         tr.marked {
             background-color: #fff9db !important;
         }
+        /* Style tạo khác biệt hoàn toàn cho dòng của người có chữ (bỏ) */
+        tr.omitted-row {
+            background-color: #f5f6fa !important;
+            color: #95a5a6;
+        }
         tr:hover {
             background-color: #f8fafc;
         }
@@ -102,6 +107,7 @@
             align-items: center;
             justify-content: flex-end;
             gap: 10px;
+            min-height: 24px; /* Giữ khung cố định kể cả khi mất ô tích */
         }
         .txt-money {
             font-weight: bold;
@@ -187,12 +193,12 @@ function splitCsvLine(line) {
     for (let i = 0; i < line.length; i++) {
         const char = line[i];
         if (char === '"') {
-            inQuotes = !inQuotes;
+             inQuotes = !inQuotes;
         } else if (char === ',' && !inQuotes) {
-            result.push(current.trim().replace(/^"|"$/g, ''));
-            current = '';
+             result.push(current.trim().replace(/^"|"$/g, ''));
+             current = '';
         } else {
-            current += char;
+             current += char;
         }
     }
     result.push(current.trim().replace(/^"|"$/g, ''));
@@ -212,7 +218,6 @@ function parseCsvData(csvText) {
     if (moneyIndex === -1 || moneyIndex === nameIndex) moneyIndex = headers.length - 1;
 
     const savedMarks = JSON.parse(localStorage.getItem('quanly_tienxe_marks') || '{}');
-    let hasChangesInLocalStorage = false;
     appData = [];
 
     for (let i = 1; i < lines.length; i++) {
@@ -226,27 +231,17 @@ function parseCsvData(csvText) {
         if (!money) money = "-";
 
         if (name) {
-            // KIỂM TRA: Nếu tên chứa chữ "(bỏ)" hoặc "(Bỏ)"
-            let isMarked = savedMarks[name] || false;
-            if (name.toLowerCase().includes("(bỏ)")) {
-                isMarked = true;
-                if (!savedMarks[name]) {
-                    savedMarks[name] = true;
-                    hasChangesInLocalStorage = true;
-                }
-            }
+            // Nhận diện thông minh: (bỏ), ( bỏ), (bỏ ), ( bỏ ) công thức RegExp gọn gàng
+            let isOmitted = /\(\s*bỏ\s*\)/i.test(name);
+            let isMarked = isOmitted ? false : (savedMarks[name] || false);
 
             appData.push({
                 name: name,
                 money: money,
-                marked: isMarked
+                marked: isMarked,
+                isOmitted: isOmitted // Lưu trạng thái để phục vụ logic ẩn nút tích
             });
         }
-    }
-
-    // Lưu lại vào localStorage nếu có cập nhật mới từ chữ "(bỏ)"
-    if (hasChangesInLocalStorage) {
-        localStorage.setItem('quanly_tienxe_marks', JSON.stringify(savedMarks));
     }
 
     document.getElementById("loadingStatus").style.display = "none";
@@ -260,14 +255,24 @@ function renderTable() {
     
     appData.forEach((item, index) => {
         const tr = document.createElement("tr");
-        if (item.marked) tr.classList.add('marked');
         
+        if (item.isOmitted) {
+            tr.classList.add('omitted-row'); // Áp dụng nền xám riêng biệt
+        } else if (item.marked) {
+            tr.classList.add('marked'); // Nền vàng nếu tích chọn thông thường
+        }
+        
+        // Logic ẩn dấu tích hoàn toàn cho dòng có chữ (bỏ)
+        let checkboxHtml = item.isOmitted 
+            ? '' 
+            : `<input type="checkbox" class="checkbox-mark" ${item.marked ? 'checked' : ''} onchange="toggleMark(${index}, this)">`;
+
         tr.innerHTML = `
             <td>${index + 1}</td>
             <td class="name-cell">${item.name}</td>
             <td>
                 <div class="money-container">
-                    <input type="checkbox" class="checkbox-mark" ${item.marked ? 'checked' : ''} onchange="toggleMark(${index}, this)">
+                    ${checkboxHtml}
                     <span class="txt-money">${item.money}</span>
                 </div>
             </td>
