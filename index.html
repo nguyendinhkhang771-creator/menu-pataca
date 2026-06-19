@@ -12,34 +12,37 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
-            /* Thay đổi link ảnh nền trực tiếp từ Google Drive của bạn */
-            background-image: url('https://lh3.googleusercontent.com/d/1zstDzrxve5nlU0jd2PyClp1i6hzPx4In');
+            background-image: url('https://docs.google.com/uc?export=download&id=1zstDzrxve5nlU0jd2PyClp1i6hzPx4In');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
-            color: #333;
+            color: #2c3e50; /* Đổi màu chữ toàn trang đậm hơn */
             padding: 40px 20px;
         }
         .container {
             max-width: 700px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.96); 
+            /* Tăng độ đậm của nền trắng (từ 0.96 lên 0.98) để nhìn chữ rõ nét nhất */
+            background: rgba(255, 255, 255, 0.98); 
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            /* Tăng độ đổ bóng để làm nổi bật hẳn ô danh sách lên khỏi hình nền */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.25); 
         }
         h2 {
-            color: #2c3e50;
+            color: #1b1b1b;
             margin-bottom: 8px;
             text-align: center;
             font-size: 24px;
+            font-weight: 700;
         }
         p.subtitle {
             text-align: center;
-            color: #7f8c8d;
+            color: #57606f;
             margin-bottom: 25px;
             font-size: 14px;
+            font-weight: 500;
         }
         .action-bar {
             display: flex;
@@ -49,16 +52,17 @@
         .search-box {
             flex: 1;
             padding: 12px 20px;
-            border: 1px solid #ddd;
+            border: 1px solid #a4b0be; /* Làm đậm đường viền ô tìm kiếm */
             border-radius: 8px;
             font-size: 16px;
             transition: all 0.3s;
             background-color: #fff;
+            color: #2c3e50;
         }
         .search-box:focus {
             border-color: #27ae60;
             outline: none;
-            box-shadow: 0 0 8px rgba(39, 174, 96, 0.2);
+            box-shadow: 0 0 8px rgba(39, 174, 96, 0.3);
         }
         .btn-refresh {
             background-color: #27ae60; 
@@ -78,15 +82,15 @@
         
         .section-title {
             font-size: 16px;
-            font-weight: bold;
-            color: #2c3e50;
+            font-weight: 700;
+            color: #1b1b1b;
             margin: 20px 0 10px 0;
             padding-left: 8px;
             border-left: 4px solid #27ae60;
         }
         .section-title.omitted {
-            border-left-color: #95a5a6;
-            color: #7f8c8d;
+            border-left-color: #7f8c8d;
+            color: #57606f;
             margin-top: 35px;
         }
 
@@ -101,25 +105,33 @@
         th, td {
             padding: 12px 14px;
             text-align: left;
-            border-bottom: 1px solid #edf2f7;
+            border-bottom: 1px solid #ced6e0; /* Làm đậm đường gạch ngang chia dòng */
             vertical-align: middle;
         }
         th {
-            background-color: #f8fafc;
-            color: #4a5568;
-            font-weight: 600;
+            background-color: #f1f2f6; /* Đổi nền tiêu đề bảng đậm hơn chút */
+            color: #2c3e50;
+            font-weight: 700;
             text-transform: uppercase;
             font-size: 13px;
             letter-spacing: 0.5px;
         }
+        
+        /* Bảng hoạt động chữ đen rõ ràng */
+        #activeTable td {
+            color: #1b1b1b;
+            font-weight: 500;
+        }
+
+        /* Bảng những người đã bỏ */
         .omitted-table td {
-            color: #95a5a6;
+            color: #7f8c8d; /* Giữ màu xám nhẹ để phân biệt nhưng vẫn đủ nhìn */
         }
         .omitted-table tr {
-            background-color: #fafbfc;
+            background-color: #f8fafc;
         }
         tr:hover {
-            background-color: #f8fafc;
+            background-color: #f1f2f6 !important;
         }
         .money-container {
             display: flex;
@@ -127,17 +139,17 @@
             justify-content: flex-end;
         }
         .txt-money {
-            font-weight: bold;
-            color: #e67e22;
+            font-weight: 700;
+            color: #d35400; /* Đậm màu cam tiền xe lên */
             font-size: 16px;
         }
         .omitted-table .txt-money {
-            color: #bdc3c7;
+            color: #a4b0be;
         }
         .no-data {
             text-align: center;
             padding: 25px;
-            color: #95a5a6;
+            color: #7f8c8d;
             display: none;
             font-size: 15px;
         }
