@@ -17,7 +17,7 @@
             padding: 40px 20px;
         }
         .container {
-            max-width: 850px; /* Tăng nhẹ chiều rộng để vừa thêm ô ghi chú */
+            max-width: 700px; /* Thu nhỏ chiều rộng lại cho vừa vặn khi bỏ ghi chú */
             margin: 0 auto;
             background: #ffffff;
             padding: 30px;
@@ -112,21 +112,6 @@
             height: 18px;
             cursor: pointer;
         }
-        /* Style riêng cho ô Input ghi chú */
-        .input-note {
-            width: 100%;
-            padding: 6px 10px;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            font-size: 14px;
-            color: #4a5568;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .input-note:focus {
-            border-color: #3498db;
-            background-color: #fff;
-        }
         .no-data {
             text-align: center;
             padding: 25px;
@@ -146,7 +131,7 @@
 
 <div class="container">
     <h2>Danh Sách Đăng Ký Tra Cứu</h2>
-    <p class="subtitle">Dữ liệu tự động đồng bộ từ Google Sheets - Đánh dấu trạng thái & ghi chú lưu tại trình duyệt</p>
+    <p class="subtitle">Dữ liệu tự động đồng bộ từ Google Sheets - Đánh dấu trạng thái lưu tại trình duyệt</p>
     
     <div class="action-bar">
         <input type="text" id="searchInput" class="search-box" onkeyup="filterTable()" placeholder="Nhập tên thành viên cần tìm nhanh...">
@@ -159,10 +144,9 @@
         <table id="dataTable">
             <thead>
                 <tr>
-                    <th style="width: 8%;">STT</th>
-                    <th style="width: 37%;">Họ và Tên</th>
-                    <th style="width: 25%; text-align: right;">Đánh dấu / Tiền Xe</th>
-                    <th style="width: 30%;">Ghi chú cá nhân</th>
+                    <th style="width: 15%;">STT</th>
+                    <th style="width: 45%;">Họ và Tên</th>
+                    <th style="width: 40%; text-align: right;">Đánh dấu / Tiền Xe</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -185,7 +169,7 @@ async function fetchSheetsData() {
     loadingStatus.innerText = "Đang tải dữ liệu từ Google Sheets...";
 
     try {
-        const response = await fetch(sheetCsvUrl + "&t=" + new Date().getTime()); // Tránh bị cache dữ liệu cũ
+        const response = await fetch(sheetCsvUrl + "&t=" + new Date().getTime());
         if (!response.ok) throw new Error("Không thể tải dữ liệu");
         
         const csvText = await response.text();
@@ -196,7 +180,6 @@ async function fetchSheetsData() {
     }
 }
 
-// Hàm phân tách dòng CSV tránh lỗi khi nội dung chứa dấu phẩy bên trong ngoặc kép
 function splitCsvLine(line) {
     const result = [];
     let current = '';
@@ -220,24 +203,17 @@ function parseCsvData(csvText) {
     const lines = csvText.split("\n");
     if (lines.length <= 1) return;
 
-    // Đọc tiêu đề hàng đầu tiên để định vị cột
     const headers = splitCsvLine(lines[0]);
     
-    // Tìm vị trí cột chứa Tên và cột chứa số thứ tự/tiền
     let nameIndex = headers.findIndex(h => h.toLowerCase().includes("họ") || h.toLowerCase().includes("tên"));
-    // Nếu không tìm thấy cột Tên cụ thể, mặc định lấy cột thứ 2 (bỏ qua Timestamp)
     if (nameIndex === -1) nameIndex = 1; 
 
-    // Tìm cột Tiền xe hoặc lấy cột cuối cùng làm cột Tiền/Thông tin đi kèm
     let moneyIndex = headers.findIndex(h => h.toLowerCase().includes("tiền") || h.toLowerCase().includes("xe"));
     if (moneyIndex === -1 || moneyIndex === nameIndex) moneyIndex = headers.length - 1;
 
-    // Lấy dữ liệu Đánh dấu và Ghi chú từ trình duyệt
     const savedMarks = JSON.parse(localStorage.getItem('quanly_tienxe_marks') || '{}');
-    const savedNotes = JSON.parse(localStorage.getItem('quanly_tienxe_notes') || '{}');
     appData = [];
 
-    // Duyệt dữ liệu từ dòng thứ 2 trở đi
     for (let i = 1; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) continue;
@@ -252,8 +228,7 @@ function parseCsvData(csvText) {
             appData.push({
                 name: name,
                 money: money,
-                marked: savedMarks[name] || false,
-                note: savedNotes[name] || "" // Đồng bộ dữ liệu ghi chú cũ của tên này
+                marked: savedMarks[name] || false
             });
         }
     }
@@ -280,9 +255,6 @@ function renderTable() {
                     <span class="txt-money">${item.money}</span>
                 </div>
             </td>
-            <td>
-                <input type="text" class="input-note" value="${item.note}" onchange="updateNote(${index}, this)" placeholder="Nhập ghi chú...">
-            </td>
         `;
         tableBody.appendChild(tr);
     });
@@ -300,16 +272,6 @@ function toggleMark(index, checkbox) {
     } else {
         row.classList.remove('marked');
     }
-}
-
-// Hàm xử lý lưu trữ nội dung ghi chú khi gõ xong và nhấn chuột ra ngoài hoặc Enter
-function updateNote(index, inputElement) {
-    const newNoteValue = inputElement.value.trim();
-    appData[index].note = newNoteValue;
-
-    const savedNotes = JSON.parse(localStorage.getItem('quanly_tienxe_notes') || '{}');
-    savedNotes[appData[index].name] = newNoteValue;
-    localStorage.setItem('quanly_tienxe_notes', JSON.stringify(savedNotes));
 }
 
 function filterTable() {
