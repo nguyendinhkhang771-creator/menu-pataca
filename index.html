@@ -17,7 +17,7 @@
             padding: 40px 20px;
         }
         .container {
-            max-width: 700px; /* Thu nhỏ chiều rộng lại cho vừa vặn khi bỏ ghi chú */
+            max-width: 700px;
             margin: 0 auto;
             background: #ffffff;
             padding: 30px;
@@ -212,6 +212,7 @@ function parseCsvData(csvText) {
     if (moneyIndex === -1 || moneyIndex === nameIndex) moneyIndex = headers.length - 1;
 
     const savedMarks = JSON.parse(localStorage.getItem('quanly_tienxe_marks') || '{}');
+    let hasChangesInLocalStorage = false;
     appData = [];
 
     for (let i = 1; i < lines.length; i++) {
@@ -225,12 +226,27 @@ function parseCsvData(csvText) {
         if (!money) money = "-";
 
         if (name) {
+            // KIỂM TRA: Nếu tên chứa chữ "(bỏ)" hoặc "(Bỏ)"
+            let isMarked = savedMarks[name] || false;
+            if (name.toLowerCase().includes("(bỏ)")) {
+                isMarked = true;
+                if (!savedMarks[name]) {
+                    savedMarks[name] = true;
+                    hasChangesInLocalStorage = true;
+                }
+            }
+
             appData.push({
                 name: name,
                 money: money,
-                marked: savedMarks[name] || false
+                marked: isMarked
             });
         }
+    }
+
+    // Lưu lại vào localStorage nếu có cập nhật mới từ chữ "(bỏ)"
+    if (hasChangesInLocalStorage) {
+        localStorage.setItem('quanly_tienxe_marks', JSON.stringify(savedMarks));
     }
 
     document.getElementById("loadingStatus").style.display = "none";
@@ -291,7 +307,7 @@ function filterTable() {
             } else {
                 tr[i].style.display = "none";
             }
-        }       
+        }        
     }
     document.getElementById("noData").style.display = hasData ? "none" : "block";
 }
