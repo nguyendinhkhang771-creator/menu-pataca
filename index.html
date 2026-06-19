@@ -3,589 +3,376 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Đặt Món Online - PATACA CAFE</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Quản Lý Đăng Ký & Tiền Xe (Tự Động Lưu)</title>
     <style>
-        :root {
-            --header-bg: #ff9900;       /* Màu cam thương hiệu PATACA */
-            --primary-brown: #5c2509;  /* Nâu đậm chủ đạo */
-            --price-red: #dc2626;      /* Đỏ đô hiển thị giá tiền */
-            --glass-bg: rgba(255, 255, 255, 0.88); /* Nền kính mờ cao cấp */
-            --text-dark: #291305;      /* Màu chữ tương phản cao */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Lexend', sans-serif; 
-            -webkit-font-smoothing: antialiased;
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            padding: 40px 20px;
         }
-        
-        body { 
-            background: url('https://lh3.googleusercontent.com/d/1v6vKj3kzfwbv_YUfheA-F3XTVmJTafMl') fixed center/cover no-repeat;
-            color: var(--text-dark); 
-            padding-bottom: 140px; 
-            background-color: #fce8d5;
-        }
-
-        /* PREMIUM HEADER DESIGN */
-        .hero-header {
-            background-color: var(--header-bg);
-            padding: 45px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            color: white;
-            border-radius: 0 0 40px 40px;
-            box-shadow: 0 10px 30px rgba(255, 153, 0, 0.25);
-            position: relative;
-        }
-        
-        .logo-container {
-            width: 110px;
-            height: 110px;
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
             background: #ffffff;
-            border-radius: 50%;
-            padding: 3px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: transform 0.3s ease;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
-        
-        .logo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 50%;
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            text-align: center;
+            font-size: 24px;
         }
-
-        .hero-header h1 {
-            font-size: 30px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            color: #ffffff;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.12);
-            margin-bottom: 6px;
+        p.subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            font-size: 14px;
         }
-
-        .hero-header p {
-            font-size: 13px;
-            font-weight: 400;
-            color: #ffffff;
-            background: rgba(92, 37, 9, 0.35);
-            padding: 5px 18px;
-            border-radius: 20px;
-            backdrop-filter: blur(5px);
-        }
-
-        .container { 
-            max-width: 800px; 
-            margin: 0 auto; 
-            padding: 0 16px; 
-        }
-
-        /* NAVIGATION TABS WITH GLASSMORPHISM */
-        .tabs-container {
-            position: sticky;
-            top: 0;
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            z-index: 999;
-            padding: 15px 0;
-            margin-bottom: 10px;
-            overflow-x: auto;
-            white-space: nowrap;
+        .action-bar {
             display: flex;
             gap: 10px;
-            scrollbar-width: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            margin-bottom: 20px;
         }
-        .tabs-container::-webkit-scrollbar { display: none; }
-        
-        .tab-item {
-            padding: 11px 22px;
-            background: rgba(255, 255, 255, 0.85);
-            color: var(--primary-brown);
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 13.5px;
-            cursor: pointer;
-            border: 1px solid rgba(92, 37, 9, 0.1);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-
-        .tab-item.active {
-            background: var(--primary-brown);
-            color: white;
-            box-shadow: 0 6px 15px rgba(92, 37, 9, 0.3);
-            border-color: var(--primary-brown);
-            transform: translateY(-1px);
-        }
-
-        /* SECTION CATEGORY */
-        .category-section { display: none; }
-        .category-section.active { display: block; animation: smoothUp 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        @keyframes smoothUp { 
-            from { opacity: 0; transform: translateY(12px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-
-        .category-title { 
+        .search-box {
+            flex: 1;
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             font-size: 16px;
-            font-weight: 700;
-            color: #ffffff;
-            margin: 25px 0 15px 2px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            background: linear-gradient(135deg, var(--primary-brown) 0%, #3e1602 100%);
-            display: inline-flex;
-            padding: 6px 16px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s;
         }
-
-        /* GRID TILES FOR PRODUCTS */
-        .menu-list { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); 
-            gap: 14px; 
-        }
-        
-        @media (max-width: 480px) {
-            .menu-list { grid-template-columns: 1fr; }
-        }
-
-        .product-card { 
-            background: var(--glass-bg); 
-            padding: 16px; 
-            border-radius: 22px; 
-            display: flex; 
-            align-items: center; 
-            box-shadow: 0 10px 25px rgba(41, 19, 5, 0.07); 
-            border: 1px solid rgba(255, 255, 255, 0.7); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .product-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(41, 19, 5, 0.12);
-        }
-
-        .product-info { flex: 1; padding-right: 12px; }
-        .product-name { font-weight: 700; font-size: 16px; color: var(--text-dark); margin-bottom: 5px; }
-        .product-price { color: var(--price-red); font-weight: 700; font-size: 16px; }
-
-        /* ADVANCED QUANTITY CONTROL */
-        .quantity-control { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            background: rgba(255, 255, 255, 0.8); 
-            padding: 5px 8px; 
-            border-radius: 40px;
-            border: 1px solid rgba(92, 37, 9, 0.12);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-        }
-
-        .btn-qty { 
-            width: 32px; 
-            height: 32px; 
-            border: none; 
-            background: #ffffff; 
-            color: var(--primary-brown); 
-            border-radius: 50%; 
-            font-weight: 700; 
-            font-size: 16px; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            box-shadow: 0 3px 8px rgba(0,0,0,0.08); 
-            transition: all 0.15s ease;
-        }
-        .btn-qty:active { transform: scale(0.9); background: #f5f5f5; }
-        .qty-val { font-weight: 700; width: 24px; text-align: center; color: var(--text-dark); font-size: 15px; }
-        
-        /* BOX CUSTOM OPTIONS */
-        .option-section { 
-            background: var(--glass-bg); 
-            padding: 20px; 
-            border-radius: 24px; 
-            border: 1px solid rgba(255, 255, 255, 0.7); 
-            margin-top: 18px; 
-            box-shadow: 0 10px 25px rgba(41, 19, 5, 0.06); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .option-section h4 { 
-            color: var(--primary-brown); 
-            font-size: 14.5px; 
-            font-weight: 700; 
-            border-left: 4px solid var(--header-bg); 
-            padding-left: 10px; 
-            margin-bottom: 15px; 
-            text-transform: uppercase;
-        }
-
-        .option-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
-        .option-item { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: var(--text-dark); cursor: pointer; }
-        .option-item input { width: 19px; height: 19px; accent-color: var(--primary-brown); cursor: pointer; }
-
-        /* FORM INPUT STYLES */
-        .form-group {
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .form-group label {
-            font-size: 13.5px;
-            font-weight: 600;
-            color: var(--primary-brown);
-        }
-        .form-control {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid rgba(92, 37, 9, 0.2);
-            border-radius: 12px;
-            font-size: 14px;
-            background: rgba(255, 255, 255, 0.6);
+        .search-box:focus {
+            border-color: #3498db;
             outline: none;
-            transition: all 0.2s ease;
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
         }
-        .form-control:focus {
-            border-color: var(--header-bg);
-            background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.15);
+        .btn-add {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
         }
-
-        /* FIXED BOTTOM CART BAR */
-        .cart-bar { 
-            position: fixed; 
-            bottom: 24px; 
-            left: 16px; 
-            right: 16px; 
-            background: rgba(255, 255, 255, 0.94); 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            padding: 16px 24px; 
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18); 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            max-width: 768px; 
-            margin: 0 auto; 
-            border-radius: 30px; 
-            z-index: 9999; 
-            border: 1px solid rgba(255, 255, 255, 0.8);
+        .btn-add:hover {
+            background-color: #27ae60;
         }
-
-        .total-label { font-size: 11px; color: #6b7280; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 2px;}
-        .total-amount { font-size: 24px; font-weight: 800; color: var(--price-red); }
-        
-        .btn-order { 
-            background: linear-gradient(135deg, #0084ff 0%, #0066cc 100%); /* Màu xanh Messenger thương hiệu */
-            color: white; 
-            border: none; 
-            padding: 14px 28px; 
-            font-weight: 700; 
-            border-radius: 50px; 
-            cursor: pointer; 
-            font-size: 14.5px; 
-            box-shadow: 0 6px 16px rgba(0,132,255,0.3); 
-            transition: all 0.2s ease;
+        .btn-edit-mode {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
         }
-        .btn-order:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,132,255,0.4); }
-        .btn-order:active { transform: translateY(1px); }
+        .btn-edit-mode.active {
+            background-color: #f1c40f;
+            color: #2c3e50;
+        }
+        .btn-reset {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-reset:hover {
+            background-color: #c0392b;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+        th, td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid #edf2f7;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #f8fafc;
+            color: #4a5568;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+        tr.marked {
+            background-color: #fff9db !important;
+        }
+        tr:hover {
+            background-color: #f8fafc;
+        }
+        .input-name {
+            width: 100%;
+            padding: 8px;
+            border: 1px dashed #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #fff;
+        }
+        .input-name:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .money-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .input-money {
+            width: 70px;
+            padding: 6px;
+            text-align: right;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #e67e22;
+            background: #fff;
+        }
+        .input-money:disabled {
+            background: transparent;
+            border-color: transparent;
+        }
+        .checkbox-mark {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .no-data {
+            text-align: center;
+            padding: 25px;
+            color: #95a5a6;
+            display: none;
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="hero-header">
-        <div class="logo-container">
-            <img src="https://lh3.googleusercontent.com/d/1AsvAC0IzIuRP9mxUfq-6tLyFl0lWv2ST" alt="PATACA CAFE Logo"> 
-        </div>
-        <h1>PATACA CAFE</h1>
-        <p>Sân Vườn - Gọi Món Tiện Lợi Giao Tận Nơi</p>
+<div class="container">
+    <h2>Danh Sách Đăng Ký Tra Cứu</h2>
+    <p class="subtitle">Dữ liệu lưu trên trình duyệt - Bật nút Chỉnh sửa để thay đổi thông tin</p>
+    
+    <div class="action-bar">
+        <input type="text" id="searchInput" class="search-box" onkeyup="filterTable()" placeholder="Nhập tên thành viên cần tìm nhanh...">
+        <button class="btn-edit-mode" id="editModeBtn" onclick="toggleEditMode()">✏️ Chỉnh sửa</button>
+        <button class="btn-add" onclick="addNewRow()">+ Thêm người</button>
+        <button class="btn-reset" onclick="resetAllData()" title="Xóa bộ nhớ tạm về mặc định">Reset</button>
     </div>
 
-    <div class="container">
+    <div class="table-wrapper">
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th style="width: 10%;">STT</th>
+                    <th style="width: 55%;">Họ và Tên</th>
+                    <th style="width: 35%; text-align: right;">Đánh dấu / Tiền Xe</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+    </div>
+    
+    <div id="noData" class="no-data">Không tìm thấy thành viên này</div>
+</div>
+
+<script>
+const defaultMembers = [
+    { name: "PHAN THỊ KIỀU MAI", money: "-" },
+    { name: "Nguyễn Kim Sơn", money: "-" },
+    { name: "Trần Phạm Ly Linh", money: "1" },
+    { name: "Trần Thị Thanh Hiền", money: "-" },
+    { name: "Lê Thị Thuỷ Nhung", money: "-" },
+    { name: "Lê Ngọc Triều Tiên", money: "-" },
+    { name: "Huỳnh Thị Kim Tân", money: "-" },
+    { name: "Bùi Gia Bảo", money: "-" },
+    { name: "Nguyễn Thanh Nhã", money: "-" },
+    { name: "Ngô Thị Như Ý", money: "-" },
+    { name: "nguyễn minh hải", money: "-" },
+    { name: "Lê kỳ nam", money: "-" },
+    { name: "Lê Nguyễn Khôi", money: "1" },
+    { name: "Đỗ Đức Phú", money: "1" },
+    { name: "Nguyễn Phan Hữu Bằng", money: "-" },
+    { name: "Nguyễn Phan Khải Nguyên", money: "-" },
+    { name: "Nguyễn Ngọc Quỳnh Trân", money: "-" },
+    { name: "phạm thị ngọc hương", money: "-" },
+    { name: "Phan thị hoàn mỹ", money: "-" },
+    { name: "Nguyễn Phương Linh", money: "-" },
+    { name: "nguyễn bảo an", money: "2" },
+    { name: "Trần Tú Như", money: "-" },
+    { name: "Hồ Minh Nhật", money: "-" },
+    { name: "Nguyễn thông tịnh uyên", money: "-" },
+    { name: "Lê Minh Thảo", money: "-" },
+    { name: "Hồ Minh Nhật", money: "-" },
+    { name: "Lê Minh Thảo", money: "-" },
+    { name: "trần thị thanh lộc", money: "-" },
+    { name: "Lê Ngọc Bảo ngân", money: "-" },
+    { name: "Nguyễn thông tịnh uyên", money: "-" },
+    { name: "Trần Gia Nhi", money: "-" },
+    { name: "Nguyễn Đình Khang", money: "-" },
+    { name: "LÊ THỊ QUỲNH NHƯ", money: "-" }
+];
+
+let appData = [];
+let isEditMode = false; // Trạng thái chế độ chỉnh sửa công khai
+
+function initData() {
+    const savedData = localStorage.getItem('quanly_tienxe_data');
+    if (savedData) {
+        appData = JSON.parse(savedData);
+    } else {
+        appData = defaultMembers.map(m => ({ name: m.name, money: m.money, marked: false }));
+    }
+    renderTable();
+}
+
+function renderTable() {
+    const tableBody = document.getElementById("tableBody");
+    tableBody.innerHTML = "";
+    
+    appData.forEach((item, index) => {
+        const tr = document.createElement("tr");
+        if (item.marked) tr.classList.add('marked');
         
-        <div class="tabs-container">
-            <button class="tab-item active" onclick="switchTab('tab-cafe', this)">☕ Cà Phê</button>
-            <button class="tab-item" onclick="switchTab('tab-tea', this)">🍃 Trà Trái Cây</button>
-            <button class="tab-item" onclick="switchTab('tab-milktea', this)">🧋 Trà Sữa & Machiato</button>
-            <button class="tab-item" onclick="switchTab('tab-yogurt', this)">🍧 Yogurt</button>
-            <button class="tab-item" onclick="switchTab('tab-daxay', this)">🧊 Đá Xay</button>
-            <button class="tab-item" onclick="switchTab('tab-soda', this)">🍹 Soda Ý</button>
-        </div>
+        // Hiển thị tên (chữ thường hoặc ô ô nhập tùy thuộc vào trạng thái chế độ chỉnh sửa)
+        let nameHTML = isEditMode 
+            ? `<input type="text" class="input-name" value="${item.name}" onchange="updateName(${index}, this.value)">`
+            : item.name;
+            
+        tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td class="name-cell">${nameHTML}</td>
+            <td>
+                <div class="money-container">
+                    <input type="checkbox" class="checkbox-mark" ${item.marked ? 'checked' : ''} onchange="toggleMark(${index}, this)">
+                    <input type="text" class="input-money" value="${item.money}" ${isEditMode ? '' : 'disabled'} onchange="updateMoney(${index}, this.value)">
+                </div>
+            </td>
+        `;
+        tableBody.appendChild(tr);
+    });
+}
 
-        <div id="tab-cafe" class="category-section active">
-            <div class="category-title">☕ Cà Phê Cổ Điển</div>
-            <div class="menu-list">
-                <div class="product-card" data-name="Cafe Đen" data-price="24000"><div class="product-info"><div class="product-name">Cafe Đen</div><div class="product-price">24.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Cafe Sữa" data-price="28000"><div class="product-info"><div class="product-name">Cafe Sữa</div><div class="product-price">28.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Cafe Muối" data-price="30000"><div class="product-info"><div class="product-name">Cafe Muối</div><div class="product-price">30.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Cafe Sữa Tươi" data-price="32000"><div class="product-info"><div class="product-name">Cafe Sữa Tươi</div><div class="product-price">32.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Capuchino" data-price="32000"><div class="product-info"><div class="product-name">Capuchino</div><div class="product-price">32.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Frappuchino Đá" data-price="36000"><div class="product-info"><div class="product-name">Frappuchino Đá</div><div class="product-price">36.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Frappuchino Sữa" data-price="39000"><div class="product-info"><div class="product-name">Frappuchino Sữa</div><div class="product-price">39.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-            </div>
-        </div>
+// Bật/Tắt chế độ chỉnh sửa hàng loạt
+function toggleEditMode() {
+    isEditMode = !isEditMode;
+    const btn = document.getElementById("editModeBtn");
+    if (isEditMode) {
+        btn.innerText = "💾 Hoàn thành";
+        btn.classList.add("active");
+    } else {
+        btn.innerText = "✏️ Chỉnh sửa";
+        btn.classList.remove("active");
+        saveToStorage(); // Thực hiện lưu khi bấm hoàn thành
+    }
+    renderTable();
+}
 
-        <div id="tab-tea" class="category-section">
-            <div class="category-title">🍃 Trà Trái Cây Thanh Mát</div>
-            <div class="menu-list">
-                <div class="product-card" data-name="Trà Đào" data-price="35000"><div class="product-info"><div class="product-name">Trà Đào</div><div class="product-price">35.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Trà Đào Cam Sả" data-price="39000"><div class="product-info"><div class="product-name">Trà Đào Cam Sả</div><div class="product-price">39.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Trà Vải" data-price="35000"><div class="product-info"><div class="product-name">Trà Vải</div><div class="product-price">35.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Trà Vải Sả Chanh" data-price="39000"><div class="product-info"><div class="product-name">Trà Vải Sả Chanh</div><div class="product-price">39.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Trà Ổi Hồng" data-price="40000"><div class="product-info"><div class="product-name">Trà Ổi Hồng</div><div class="product-price">40.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Trà Tropical" data-price="40000"><div class="product-info"><div class="product-name">Trà Tropical</div><div class="product-price">40.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Trà Pataca" data-price="43000"><div class="product-info"><div class="product-name">Trà Pataca</div><div class="product-price">43.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-            </div>
-        </div>
+function saveToStorage() {
+    localStorage.setItem('quanly_tienxe_data', JSON.stringify(appData));
+}
 
-        <div id="tab-milktea" class="category-section">
-            <div class="category-title">🧋 Trà Sữa & Machiato Đậm Vị</div>
-            <div class="menu-list">
-                <div class="product-card" data-name="Trà Sữa Truyền Thống" data-price="35000"><div class="product-info"><div class="product-name">Trà Sữa Truyền Thống</div><div class="product-price">35.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Trà Sữa Olong Hỷ" data-price="39000"><div class="product-info"><div class="product-name">Trà Sữa Olong Hỷ</div><div class="product-price">39.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Trà Sữa Pataca" data-price="43000"><div class="product-info"><div class="product-name">Trà Sữa Pataca</div><div class="product-price">43.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Milkshake Vani" data-price="30000"><div class="product-info"><div class="product-name">Milkshake Vani</div><div class="product-price">30.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Milkshake Dâu" data-price="30000"><div class="product-info"><div class="product-name">Milkshake Dâu</div><div class="product-price">30.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Milkshake Việt Quất" data-price="30000"><div class="product-info"><div class="product-name">Milkshake Việt Quất</div><div class="product-price">30.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Milkshake Hoàng Kim" data-price="33000"><div class="product-info"><div class="product-name">Milkshake Hoàng Kim</div><div class="product-price">33.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Trà Hoa Đậu Biếc Machiato" data-price="30000"><div class="product-info"><div class="product-name">Trà Hoa Đậu Biếc Machiato</div><div class="product-price">30.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Trà Olong Machiato" data-price="30000"><div class="product-info"><div class="product-name">Trà Olong Machiato</div><div class="product-price">30.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Trà Hồng Machiato" data-price="30000"><div class="product-info"><div class="product-name">Trà Hồng Machiato</div><div class="product-price">30.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-            </div>
-        </div>
+function toggleMark(index, checkbox) {
+    appData[index].marked = checkbox.checked;
+    saveToStorage();
+    const row = checkbox.closest('tr');
+    if (checkbox.checked) {
+        row.classList.add('marked');
+    } else {
+        row.classList.remove('marked');
+    }
+}
 
-        <div id="tab-yogurt" class="category-section">
-            <div class="category-title">🍧 Yogurt Sữa Chua Trái Cây</div>
-            <div class="menu-list">
-                <div class="product-card" data-name="Yogurt Đá" data-price="30000"><div class="product-info"><div class="product-name">Yogurt Đá</div><div class="product-price">30.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Yogurt Dâu" data-price="33000"><div class="product-info"><div class="product-name">Yogurt Dâu</div><div class="product-price">33.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Yogurt Cam" data-price="33000"><div class="product-info"><div class="product-name">Yogurt Cam</div><div class="product-price">33.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Yogurt Việt Quất" data-price="33000"><div class="product-info"><div class="product-name">Yogurt Việt Quất</div><div class="product-price">33.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Yogurt Đào" data-price="33000"><div class="product-info"><div class="product-name">Yogurt Đào</div><div class="product-price">33.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Yogurt Tropical" data-price="38000"><div class="product-info"><div class="product-name">Yogurt Tropical</div><div class="product-price">38.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-            </div>
-        </div>
+function updateMoney(index, newValue) {
+    appData[index].money = newValue;
+    saveToStorage();
+}
 
-        <div id="tab-daxay" class="category-section">
-            <div class="category-title">🧊 Món Đá Xay Tuyết Mát Lạnh</div>
-            <div class="menu-list">
-                <div class="product-card" data-name="Cacao Đá Xay" data-price="35000"><div class="product-info"><div class="product-name">Cacao Đá Xay</div><div class="product-price">35.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Matcha Đá Xay" data-price="37000"><div class="product-info"><div class="product-name">Matcha Đá Xay</div><div class="product-price">37.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Oreo Trà Xanh" data-price="38000"><div class="product-info"><div class="product-name">Oreo Trà Xanh</div><div class="product-price">38.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Oreo Đá Xay" data-price="35000"><div class="product-info"><div class="product-name">Oreo Đá Xay</div><div class="product-price">35.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Socola Bạc Hà Đá Xay" data-price="40000"><div class="product-info"><div class="product-name">Socola Bạc Hà Đá Xay</div><div class="product-price">40.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Tropical Đá Xay" data-price="40000"><div class="product-info"><div class="product-name">Tropical Đá Xay</div><div class="product-price">40.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Matcha Green Tea" data-price="43000"><div class="product-info"><div class="product-name">Matcha Green Tea</div><div class="product-price">43.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-            </div>
-        </div>
+function updateName(index, newName) {
+    appData[index].name = newName;
+    saveToStorage();
+}
 
-        <div id="tab-soda" class="category-section">
-            <div class="category-title">🍹 Soda Ý Giải Nhiệt Sảng Khoái</div>
-            <div class="menu-list">
-                <div class="product-card" data-name="Soda Mojito" data-price="30000"><div class="product-info"><div class="product-name">Soda Mojito</div><div class="product-price">30.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Soda Blue Ocean" data-price="32000"><div class="product-info"><div class="product-name">Soda Blue Ocean</div><div class="product-price">32.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Soda Việt Quất" data-price="32000"><div class="product-info"><div class="product-name">Soda Việt Quất</div><div class="product-price">32.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Soda Cam Yakult" data-price="35000"><div class="product-info"><div class="product-name">Soda Cam Yakult</div><div class="product-price">35.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-                <div class="product-card" data-name="Soda Nhiệt Đới" data-price="38000"><div class="product-info"><div class="product-name">Soda Nhiệt Đới</div><div class="product-price">38.000đ</div></div><div class="quantity-control"><button class="btn-qty" onclick="changeQty(this, -1)">-</button><span class="qty-val">0</span><button class="btn-qty" onclick="changeQty(this, 1)">+</button></div></div>
-            </div>
-        </div>
+function addNewRow() {
+    appData.push({ name: "", money: "-", marked: false });
+    saveToStorage();
+    
+    // Khi thêm người mới, tự động mở chế độ chỉnh sửa để người dùng nhập tên luôn
+    isEditMode = true;
+    const btn = document.getElementById("editModeBtn");
+    btn.innerText = "💾 Hoàn thành";
+    btn.classList.add("active");
+    
+    renderTable();
+    
+    const rows = document.getElementById("tableBody").getElementsByTagName("tr");
+    if(rows.length > 0) {
+        rows[rows.length - 1].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
 
-        <div class="option-section">
-            <h4>🍬 Quý khách vui lòng chọn độ ngọt theo khẩu vị:</h4>
-            <div class="option-grid">
-                <label class="option-item"><input type="radio" name="sweetness" value="0%"> 0% (Không đường)</label>
-                <label class="option-item"><input type="radio" name="sweetness" value="25%"> 25% (Ít ngọt)</label>
-                <label class="option-item"><input type="radio" name="sweetness" value="50%" checked> 50% (Ngọt vừa)</label>
-                <label class="option-item"><input type="radio" name="sweetness" value="75%"> 75% (Ngọt thanh)</label>
-                <label class="option-item"><input type="radio" name="sweetness" value="100%"> 100% (Bình thường)</label>
-            </div>
-        </div>
+function resetAllData() {
+    if (confirm("Xóa hết chỉnh sửa để quay về danh sách mặc định gốc?")) {
+        localStorage.removeItem('quanly_tienxe_data');
+        isEditMode = false;
+        document.getElementById("editModeBtn").innerText = "✏️ Chỉnh sửa";
+        document.getElementById("editModeBtn").classList.remove("active");
+        initData();
+    }
+}
 
-        <div class="option-section">
-            <h4>🧊 LỰA CHỌN ĐÁ CHO ĐỒ UỐNG:</h4>
-            <div class="option-grid">
-                <label class="option-item"><input type="radio" name="ice_option" value="Đá chung (Bỏ đá vào ly)" checked> Đá chung (Bỏ vào ly)</label>
-                <label class="option-item"><input type="radio" name="ice_option" value="Đá riêng (Để bịch đá riêng)"> Đá riêng (Để bịch riêng)</label>
-                <label class="option-item"><input type="radio" name="ice_option" value="Không đá"> Không lấy đá</label>
-            </div>
-        </div>
+function filterTable() {
+    const input = document.getElementById("searchInput");
+    const filter = input.value.toUpperCase().trim();
+    const table = document.getElementById("dataTable");
+    const tr = table.getElementsByTagName("tr");
+    let hasData = false;
 
-        <div class="option-section">
-            <h4>🚚 THÔNG TIN GIAO HÀNG:</h4>
-            <div class="form-group">
-                <label for="cust-name">Tên khách hàng:</label>
-                <input type="text" id="cust-name" class="form-control" placeholder="Ví dụ: Nguyễn Văn A">
-            </div>
-            <div class="form-group">
-                <label for="cust-phone">Số điện thoại nhận hàng (*):</label>
-                <input type="tel" id="cust-phone" class="form-control" placeholder="Ví dụ: 0901234567">
-            </div>
-            <div class="form-group">
-                <label for="cust-address">Địa chỉ giao hàng (*):</label>
-                <input type="text" id="cust-address" class="form-control" placeholder="Số nhà, tên đường, phường/xã...">
-            </div>
-        </div>
-
-        <div class="option-section" style="margin-bottom: 40px;">
-            <h4>🍡 Thêm Topping:</h4>
-            <div class="option-grid">
-                <label class="option-item"><input type="checkbox" class="cb-topping" data-name="Trân Châu Đen" data-price="7000" onchange="updateTotal()"> Trân Châu Đen (+7k)</label>
-                <label class="option-item"><input type="checkbox" class="cb-topping" data-name="Trân Châu Trắng" data-price="7000" onchange="updateTotal()"> Trân Châu Trắng (+7k)</label>
-                <label class="option-item"><input type="checkbox" class="cb-topping" data-name="Pudding" data-price="10000" onchange="updateTotal()"> Pudding (+10k)</label>
-                <label class="option-item"><input type="checkbox" class="cb-topping" data-name="Thạch Trái Cây" data-price="10000" onchange="updateTotal()"> Thạch Trái Cây (+10k)</label>
-                <label class="option-item"><input type="checkbox" class="cb-topping" data-name="Thạch Phô Mai" data-price="10000" onchange="updateTotal()"> Thạch Phô Mai (+10k)</label>
-                <label class="option-item"><input type="checkbox" class="cb-topping" data-name="Kem Muối" data-price="10000" onchange="updateTotal()"> Kem Muối (+10k)</label>
-                <label class="option-item"><input type="checkbox" class="cb-topping" data-name="Kem Machiato" data-price="12000" onchange="updateTotal()"> Kem Machiato (+12k)</label>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="cart-bar">
-        <div>
-            <p class="total-label">Tổng tạm tính</p>
-            <p id="total-price" class="total-amount">0đ</p>
-        </div>
-        <button class="btn-order" onclick="sendMessenger()">Gửi đơn qua Fanpage</button>
-    </div>
-
-    <script>
-        // Đã cập nhật đúng ID Fanpage chính thức của Pataca Cafe
-        const FB_PAGE_ID = "Pataca.Cafe"; 
-
-        function switchTab(tabId, btn) {
-            document.querySelectorAll('.category-section').forEach(section => section.classList.remove('active'));
-            document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
-            const targetSection = document.getElementById(tabId);
-            if(targetSection) targetSection.classList.add('active');
-            btn.classList.add('active');
-        }
-
-        function changeQty(btn, change) {
-            const qtySpan = btn.parentElement.querySelector('.qty-val');
-            let currentQty = parseInt(qtySpan.innerText);
-            currentQty += change;
-            if (currentQty < 0) currentQty = 0;
-            qtySpan.innerText = currentQty;
-            updateTotal();
-        }
-
-        function updateTotal() {
-            let total = 0;
-            document.querySelectorAll('.product-card').forEach(card => {
-                const price = parseInt(card.getAttribute('data-price'));
-                const qty = parseInt(card.querySelector('.qty-val').innerText);
-                total += price * qty;
-            });
-            document.querySelectorAll('.cb-topping:checked').forEach(cb => {
-                total += parseInt(cb.getAttribute('data-price'));
-            });
-            document.getElementById('total-price').innerText = total.toLocaleString('vi-VN') + 'đ';
-        }
-
-        function sendMessenger() {
-            let hasItem = false;
-            document.querySelectorAll('.product-card').forEach(card => {
-                const qty = parseInt(card.querySelector('.qty-val').innerText);
-                if (qty > 0) hasItem = true;
-            });
-
-            if (!hasItem) {
-                alert("Bạn ơi, vui lòng chọn số lượng món nước mong muốn trước khi gửi đơn nhé!");
-                return;
+    for (let i = 1; i < tr.length; i++) {
+        const tdName = tr[i].getElementsByClassName("name-cell")[0];
+        if (tdName) {
+            const inputField = tdName.querySelector('.input-name');
+            const txtValue = inputField ? inputField.value : (tdName.textContent || tdName.innerText);
+            
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+                hasData = true;
+            } else {
+                tr[i].style.display = "none";
             }
+        }       
+    }
+    document.getElementById("noData").style.display = hasData ? "none" : "block";
+}
 
-            const name = document.getElementById('cust-name').value.trim();
-            const phone = document.getElementById('cust-phone').value.trim();
-            const address = document.getElementById('cust-address').value.trim();
+window.onload = initData;
+</script>
 
-            if (!phone) {
-                alert("Vui lòng điền Số điện thoại để quán liên hệ giao hàng ạ!");
-                document.getElementById('cust-phone').focus();
-                return;
-            }
-            if (!address) {
-                alert("Vui lòng điền Địa chỉ để shipper giao món đến tận nơi ạ!");
-                document.getElementById('cust-address').focus();
-                return;
-            }
-
-            const selectedSweet = document.querySelector('input[name="sweetness"]:checked').value;
-            const selectedIce = document.querySelector('input[name="ice_option"]:checked').value;
-
-            // Xây dựng hóa đơn chi tiết gửi đến Fanpage
-            let text = "☕ ĐƠN HÀNG MỚI ĐẶT ONLINE:\n";
-            text += "=========================\n\n";
-            text += "📦 [THÔNG TIN KHÁCH HÀNG]\n";
-            text += ` 👤 Tên: ${name ? name : "Khách vãng lai"}\n`;
-            text += ` 📞 SĐT: ${phone}\n`;
-            text += ` 📍 Giao tại: ${address}\n`;
-            text += ` 🍬 Mức ngọt: ${selectedSweet}\n`;
-            text += ` 🧊 Loại đá: ${selectedIce}\n\n`;
-            text += "-------------------------\n";
-            text += "📋 [CHI TIẾT MÓN ĐẶT]\n";
-
-            let total = 0;
-            document.querySelectorAll('.product-card').forEach(card => {
-                const pName = card.getAttribute('data-name');
-                const price = parseInt(card.getAttribute('data-price'));
-                const qty = parseInt(card.querySelector('.qty-val').innerText);
-                
-                if (qty > 0) {
-                    let itemTotal = price * qty;
-                    text += ` ▪️ ${pName} (x${qty})\n`;
-                    text += `   ↳ Giá: ${price.toLocaleString('vi-VN')}đ → Tổng: ${itemTotal.toLocaleString('vi-VN')}đ\n`;
-                    total += itemTotal;
-                }
-            });
-
-            let toppingText = "";
-            document.querySelectorAll('.cb-topping:checked').forEach(cb => {
-                const tName = cb.getAttribute('data-name');
-                const tPrice = parseInt(cb.getAttribute('data-price'));
-                toppingText += ` ➕ Thêm: ${tName} (+${tPrice.toLocaleString('vi-VN')}đ)\n`;
-                total += tPrice;
-            });
-            if (toppingText !== "") {
-                text += "\n🍡 [TOPPING CHỌN THÊM]\n" + toppingText;
-            }
-
-            text += "\n=========================\n";
-            text += `💰 TỔNG CỘNG ĐƠN HÀNG: ${total.toLocaleString('vi-VN')}đ\n\n`;
-            text += "Quán kiểm tra đơn và phản hồi cho mình nhé!";
-
-            // Tự động sao chép văn bản vào bộ nhớ tạm (Clipboard) trước khi mở link chat m.me
-            navigator.clipboard.writeText(text).then(() => {
-                alert("Đã sao chép hóa đơn thành công! Hệ thống đang chuyển hướng tới Messenger của Fanpage Pataca Cafe. Bạn chỉ cần nhấn giữ ô nhập tin nhắn -> chọn 'Dán' (Paste) và gửi đơn đi là xong ạ!");
-                const url = `https://m.me/${FB_PAGE_ID}`;
-                window.open(url, '_blank');
-            }).catch(err => {
-                // Phương án dự phòng nếu trình duyệt/thiết bị chặn quyền tự động sao chép
-                const url = `https://m.me/${FB_PAGE_ID}`;
-                window.open(url, '_blank');
-            });
-        }
-    </script>
 </body>
 </html>
