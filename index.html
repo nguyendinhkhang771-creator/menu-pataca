@@ -12,17 +12,22 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
-            background-color: #f4f6f9;
+            /* Cài đặt ảnh hội trại làm hình nền cho toàn bộ trang web */
+            background-image: url('https://raw.githubusercontent.com/nguyendinhkhang771-creator/menu-pataca/main/PHI%E1%BA%BEU%20%C4%90%C4%82NG%20K%C3%9D%20XE%20%C4%90I%20H%E1%BB%98I%20TRAI%20(%20T%E1%BB%ACNH%20B%C3%8CNH%20THU%E1%BA%ACN%20C%C5%A8%20)%20(2).jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
             color: #333;
             padding: 40px 20px;
         }
         .container {
             max-width: 700px;
             margin: 0 auto;
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.96); /* Bo viền và làm nền trắng hơi trong suốt nhẹ để thấy nền phía sau */
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
         }
         h2 {
             color: #2c3e50;
@@ -48,14 +53,15 @@
             border-radius: 8px;
             font-size: 16px;
             transition: all 0.3s;
+            background-color: #fff;
         }
         .search-box:focus {
-            border-color: #3498db;
+            border-color: #27ae60;
             outline: none;
-            box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
+            box-shadow: 0 0 8px rgba(39, 174, 96, 0.2);
         }
         .btn-refresh {
-            background-color: #3498db;
+            background-color: #27ae60; /* Thay đổi màu xanh lá để tone-sur-tone với ảnh nền hội trại */
             color: white;
             border: none;
             padding: 0 15px;
@@ -67,7 +73,7 @@
             white-space: nowrap;
         }
         .btn-refresh:hover {
-            background-color: #2980b9;
+            background-color: #219a52;
         }
         
         .section-title {
@@ -76,7 +82,7 @@
             color: #2c3e50;
             margin: 20px 0 10px 0;
             padding-left: 8px;
-            border-left: 4px solid #3498db;
+            border-left: 4px solid #27ae60;
         }
         .section-title.omitted {
             border-left-color: #95a5a6;
@@ -138,7 +144,7 @@
         .loading {
             text-align: center;
             padding: 20px;
-            color: #3498db;
+            color: #27ae60;
             font-weight: bold;
         }
     </style>
@@ -202,7 +208,7 @@ async function fetchSheetsData() {
     const tablesContainer = document.getElementById("tablesContainer");
     loadingStatus.style.display = "block";
     tablesContainer.style.display = "none";
-    loadingStatus.innerText = "Đang tải dữ liệu từ Google Sheets...!";
+    loadingStatus.innerText = "Đang tải dữ liệu từ Google Sheets...";
 
     try {
         const response = await fetch(sheetCsvUrl + "&t=" + new Date().getTime());
@@ -270,7 +276,7 @@ function parseCsvData(csvText) {
     activeData = [];
     omittedData = [];
     
-    let globalIndex = 1; // Sử dụng biến đếm chung xuyên suốt danh sách gốc
+    let globalIndex = 1;
 
     for (let i = 1; i < lines.length; i++) {
         const line = lines[i].trim();
@@ -285,7 +291,6 @@ function parseCsvData(csvText) {
         if (name) {
             let isOmitted = /\(\s*bỏ\s*\)/i.test(name);
             
-            // Gán STT gốc (globalIndex) cố định cho từng người
             let item = { 
                 stt: globalIndex, 
                 name: name, 
@@ -308,7 +313,6 @@ function parseCsvData(csvText) {
 }
 
 function renderTables() {
-    // 1. In danh sách Hoạt Động với STT gốc
     const activeBody = document.getElementById("activeBody");
     activeBody.innerHTML = "";
     activeData.forEach((item) => {
@@ -321,7 +325,6 @@ function renderTables() {
         activeBody.appendChild(tr);
     });
 
-    // 2. In danh sách Đã Bỏ với STT gốc không thay đổi
     const omittedBody = document.getElementById("omittedBody");
     omittedBody.innerHTML = "";
     omittedData.forEach((item) => {
