@@ -12,22 +12,22 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
-            background-image: url('https://docs.google.com/uc?export=download&id=1zstDzrxve5nlU0jd2PyClp1i6hzPx4In');
+            /* Link ảnh hội trại đã được tối ưu chạy trực tiếp, hiển thị 100% ổn định */
+            background-image: url('https://lh3.googleusercontent.com/d/1zstDzrxve5nlU0jd2PyClp1i6hzPx4In');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
-            color: #2c3e50; /* Đổi màu chữ toàn trang đậm hơn */
+            color: #2c3e50;
             padding: 40px 20px;
         }
         .container {
             max-width: 700px;
             margin: 0 auto;
-            /* Tăng độ đậm của nền trắng (từ 0.96 lên 0.98) để nhìn chữ rõ nét nhất */
+            /* Giữ độ đậm 0.98 để ô danh sách luôn rõ nét, không bị hình nền đè chữ */
             background: rgba(255, 255, 255, 0.98); 
             padding: 30px;
             border-radius: 12px;
-            /* Tăng độ đổ bóng để làm nổi bật hẳn ô danh sách lên khỏi hình nền */
             box-shadow: 0 10px 40px rgba(0,0,0,0.25); 
         }
         h2 {
@@ -52,7 +52,7 @@
         .search-box {
             flex: 1;
             padding: 12px 20px;
-            border: 1px solid #a4b0be; /* Làm đậm đường viền ô tìm kiếm */
+            border: 1px solid #a4b0be;
             border-radius: 8px;
             font-size: 16px;
             transition: all 0.3s;
@@ -105,11 +105,11 @@
         th, td {
             padding: 12px 14px;
             text-align: left;
-            border-bottom: 1px solid #ced6e0; /* Làm đậm đường gạch ngang chia dòng */
+            border-bottom: 1px solid #ced6e0;
             vertical-align: middle;
         }
         th {
-            background-color: #f1f2f6; /* Đổi nền tiêu đề bảng đậm hơn chút */
+            background-color: #f1f2f6;
             color: #2c3e50;
             font-weight: 700;
             text-transform: uppercase;
@@ -117,15 +117,13 @@
             letter-spacing: 0.5px;
         }
         
-        /* Bảng hoạt động chữ đen rõ ràng */
         #activeTable td {
             color: #1b1b1b;
             font-weight: 500;
         }
 
-        /* Bảng những người đã bỏ */
         .omitted-table td {
-            color: #7f8c8d; /* Giữ màu xám nhẹ để phân biệt nhưng vẫn đủ nhìn */
+            color: #7f8c8d;
         }
         .omitted-table tr {
             background-color: #f8fafc;
@@ -140,7 +138,7 @@
         }
         .txt-money {
             font-weight: 700;
-            color: #d35400; /* Đậm màu cam tiền xe lên */
+            color: #d35400;
             font-size: 16px;
         }
         .omitted-table .txt-money {
@@ -164,7 +162,7 @@
 <body>
 
 <div class="container">
-    <h2>Danh Sách Tra Cứu Đăng Ký Xe </h2>
+    <h2>Danh Sách Đăng Ký Tra Cứu</h2>
     <p class="subtitle">Dữ liệu tự động đồng bộ từ Google Sheets</p>
     
     <div class="action-bar">
