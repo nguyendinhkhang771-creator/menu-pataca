@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Đăng Ký & Tiền Xe (Tự Động Lưu)</title>
+    <title>Quản Lý Đăng Ký & Tiền Xe (Đồng Bộ Google Sheets)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -54,22 +54,7 @@
             outline: none;
             box-shadow: 0 0 8px rgba(52, 152, 219, 0.2);
         }
-        .btn-add {
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            padding: 0 20px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            white-space: nowrap;
-        }
-        .btn-add:hover {
-            background-color: #27ae60;
-        }
-        .btn-edit-mode {
+        .btn-refresh {
             background-color: #3498db;
             color: white;
             border: none;
@@ -81,22 +66,8 @@
             transition: background 0.2s;
             white-space: nowrap;
         }
-        .btn-edit-mode.active {
-            background-color: #f1c40f;
-            color: #2c3e50;
-        }
-        .btn-reset {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 0 15px;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-reset:hover {
-            background-color: #c0392b;
+        .btn-refresh:hover {
+            background-color: #2980b9;
         }
         .table-wrapper {
             overflow-x: auto;
@@ -126,37 +97,15 @@
         tr:hover {
             background-color: #f8fafc;
         }
-        .input-name {
-            width: 100%;
-            padding: 8px;
-            border: 1px dashed #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-            background: #fff;
-        }
-        .input-name:focus {
-            border-color: #3498db;
-            outline: none;
-        }
         .money-container {
             display: flex;
             align-items: center;
             justify-content: flex-end;
             gap: 10px;
         }
-        .input-money {
-            width: 70px;
-            padding: 6px;
-            text-align: right;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .txt-money {
             font-weight: bold;
             color: #e67e22;
-            background: #fff;
-        }
-        .input-money:disabled {
-            background: transparent;
-            border-color: transparent;
         }
         .checkbox-mark {
             width: 18px;
@@ -170,22 +119,28 @@
             display: none;
             font-size: 15px;
         }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #3498db;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>Danh Sách Đăng Ký Tra Cứu</h2>
-    <p class="subtitle">Dữ liệu lưu trên trình duyệt - Bật nút Chỉnh sửa để thay đổi thông tin</p>
+    <p class="subtitle">Dữ liệu tự động đồng bộ từ Google Sheets - Đánh dấu trạng thái lưu tại trình duyệt</p>
     
     <div class="action-bar">
         <input type="text" id="searchInput" class="search-box" onkeyup="filterTable()" placeholder="Nhập tên thành viên cần tìm nhanh...">
-        <button class="btn-edit-mode" id="editModeBtn" onclick="toggleEditMode()">✏️ Chỉnh sửa</button>
-        <button class="btn-add" onclick="addNewRow()">+ Thêm người</button>
-        <button class="btn-reset" onclick="resetAllData()" title="Xóa bộ nhớ tạm về mặc định">Reset</button>
+        <button class="btn-refresh" onclick="fetchSheetsData()">🔄 Tải lại Sheets</button>
     </div>
 
-    <div class="table-wrapper">
+    <div id="loadingStatus" class="loading">Đang tải dữ liệu từ Google Sheets...</div>
+
+    <div class="table-wrapper" id="tableWrapper" style="display: none;">
         <table id="dataTable">
             <thead>
                 <tr>
@@ -194,8 +149,7 @@
                     <th style="width: 35%; text-align: right;">Đánh dấu / Tiền Xe</th>
                 </tr>
             </thead>
-            <tbody id="tableBody">
-                </tbody>
+            <tbody id="tableBody"></tbody>
         </table>
     </div>
     
@@ -203,52 +157,90 @@
 </div>
 
 <script>
-const defaultMembers = [
-    { name: "PHAN THỊ KIỀU MAI", money: "-" },
-    { name: "Nguyễn Kim Sơn", money: "-" },
-    { name: "Trần Phạm Ly Linh", money: "1" },
-    { name: "Trần Thị Thanh Hiền", money: "-" },
-    { name: "Lê Thị Thuỷ Nhung", money: "-" },
-    { name: "Lê Ngọc Triều Tiên", money: "-" },
-    { name: "Huỳnh Thị Kim Tân", money: "-" },
-    { name: "Bùi Gia Bảo", money: "-" },
-    { name: "Nguyễn Thanh Nhã", money: "-" },
-    { name: "Ngô Thị Như Ý", money: "-" },
-    { name: "nguyễn minh hải", money: "-" },
-    { name: "Lê kỳ nam", money: "-" },
-    { name: "Lê Nguyễn Khôi", money: "1" },
-    { name: "Đỗ Đức Phú", money: "1" },
-    { name: "Nguyễn Phan Hữu Bằng", money: "-" },
-    { name: "Nguyễn Phan Khải Nguyên", money: "-" },
-    { name: "Nguyễn Ngọc Quỳnh Trân", money: "-" },
-    { name: "phạm thị ngọc hương", money: "-" },
-    { name: "Phan thị hoàn mỹ", money: "-" },
-    { name: "Nguyễn Phương Linh", money: "-" },
-    { name: "nguyễn bảo an", money: "2" },
-    { name: "Trần Tú Như", money: "-" },
-    { name: "Hồ Minh Nhật", money: "-" },
-    { name: "Nguyễn thông tịnh uyên", money: "-" },
-    { name: "Lê Minh Thảo", money: "-" },
-    { name: "Hồ Minh Nhật", money: "-" },
-    { name: "Lê Minh Thảo", money: "-" },
-    { name: "trần thị thanh lộc", money: "-" },
-    { name: "Lê Ngọc Bảo ngân", money: "-" },
-    { name: "Nguyễn thông tịnh uyên", money: "-" },
-    { name: "Trần Gia Nhi", money: "-" },
-    { name: "Nguyễn Đình Khang", money: "-" },
-    { name: "LÊ THỊ QUỲNH NHƯ", money: "-" }
-];
+const sheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTq9RqoyKo2R4qVXTRa_Q2PlA_AAhLBNi_1z2Vw-DRZX6ObCrJXRDmdPNc7pv7XnOiarpJysbyAP5e7/pub?output=csv";
 
 let appData = [];
-let isEditMode = false; // Trạng thái chế độ chỉnh sửa công khai
 
-function initData() {
-    const savedData = localStorage.getItem('quanly_tienxe_data');
-    if (savedData) {
-        appData = JSON.parse(savedData);
-    } else {
-        appData = defaultMembers.map(m => ({ name: m.name, money: m.money, marked: false }));
+async function fetchSheetsData() {
+    const loadingStatus = document.getElementById("loadingStatus");
+    const tableWrapper = document.getElementById("tableWrapper");
+    loadingStatus.style.display = "block";
+    tableWrapper.style.display = "none";
+    loadingStatus.innerText = "Đang tải dữ liệu từ Google Sheets...";
+
+    try {
+        const response = await fetch(sheetCsvUrl + "&t=" + new Date().getTime()); // Tránh bị cache dữ liệu cũ
+        if (!response.ok) throw new Error("Không thể tải dữ liệu");
+        
+        const csvText = await response.text();
+        parseCsvData(csvText);
+    } catch (error) {
+        console.error(error);
+        loadingStatus.innerText = "Lỗi: Không thể lấy dữ liệu từ Google Sheets.";
     }
+}
+
+// Hàm phân tách dòng CSV tránh lỗi khi nội dung chứa dấu phẩy bên trong ngoặc kép
+function splitCsvLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+            inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+            result.push(current.trim().replace(/^"|"$/g, ''));
+            current = '';
+        } else {
+            current += char;
+        }
+    }
+    result.push(current.trim().replace(/^"|"$/g, ''));
+    return result;
+}
+
+function parseCsvData(csvText) {
+    const lines = csvText.split("\n");
+    if (lines.length <= 1) return;
+
+    // Đọc tiêu đề hàng đầu tiên để định vị cột
+    const headers = splitCsvLine(lines[0]);
+    
+    // Tìm vị trí cột chứa Tên và cột chứa số thứ tự/tiền
+    let nameIndex = headers.findIndex(h => h.toLowerCase().includes("họ") || h.toLowerCase().includes("tên"));
+    // Nếu không tìm thấy cột Tên cụ thể, mặc định lấy cột thứ 2 (bỏ qua Timestamp)
+    if (nameIndex === -1) nameIndex = 1; 
+
+    // Tìm cột Tiền xe hoặc lấy cột cuối cùng làm cột Tiền/Thông tin đi kèm
+    let moneyIndex = headers.findIndex(h => h.toLowerCase().includes("tiền") || h.toLowerCase().includes("xe"));
+    if (moneyIndex === -1 || moneyIndex === nameIndex) moneyIndex = headers.length - 1;
+
+    const savedMarks = JSON.parse(localStorage.getItem('quanly_tienxe_marks') || '{}');
+    appData = [];
+
+    // Duyệt dữ liệu từ dòng thứ 2 trở đi
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        const columns = splitCsvLine(line);
+        const name = columns[nameIndex] ? columns[nameIndex].trim() : "";
+        let money = columns[moneyIndex] ? columns[moneyIndex].trim() : "-";
+
+        if (!money) money = "-";
+
+        if (name) {
+            appData.push({
+                name: name,
+                money: money,
+                marked: savedMarks[name] || false
+            });
+        }
+    }
+
+    document.getElementById("loadingStatus").style.display = "none";
+    document.getElementById("tableWrapper").style.display = "block";
     renderTable();
 }
 
@@ -260,18 +252,13 @@ function renderTable() {
         const tr = document.createElement("tr");
         if (item.marked) tr.classList.add('marked');
         
-        // Hiển thị tên (chữ thường hoặc ô ô nhập tùy thuộc vào trạng thái chế độ chỉnh sửa)
-        let nameHTML = isEditMode 
-            ? `<input type="text" class="input-name" value="${item.name}" onchange="updateName(${index}, this.value)">`
-            : item.name;
-            
         tr.innerHTML = `
             <td>${index + 1}</td>
-            <td class="name-cell">${nameHTML}</td>
+            <td class="name-cell">${item.name}</td>
             <td>
                 <div class="money-container">
                     <input type="checkbox" class="checkbox-mark" ${item.marked ? 'checked' : ''} onchange="toggleMark(${index}, this)">
-                    <input type="text" class="input-money" value="${item.money}" ${isEditMode ? '' : 'disabled'} onchange="updateMoney(${index}, this.value)">
+                    <span class="txt-money">${item.money}</span>
                 </div>
             </td>
         `;
@@ -279,71 +266,17 @@ function renderTable() {
     });
 }
 
-// Bật/Tắt chế độ chỉnh sửa hàng loạt
-function toggleEditMode() {
-    isEditMode = !isEditMode;
-    const btn = document.getElementById("editModeBtn");
-    if (isEditMode) {
-        btn.innerText = "💾 Hoàn thành";
-        btn.classList.add("active");
-    } else {
-        btn.innerText = "✏️ Chỉnh sửa";
-        btn.classList.remove("active");
-        saveToStorage(); // Thực hiện lưu khi bấm hoàn thành
-    }
-    renderTable();
-}
-
-function saveToStorage() {
-    localStorage.setItem('quanly_tienxe_data', JSON.stringify(appData));
-}
-
 function toggleMark(index, checkbox) {
     appData[index].marked = checkbox.checked;
-    saveToStorage();
+    const savedMarks = JSON.parse(localStorage.getItem('quanly_tienxe_marks') || '{}');
+    savedMarks[appData[index].name] = checkbox.checked;
+    localStorage.setItem('quanly_tienxe_marks', JSON.stringify(savedMarks));
+
     const row = checkbox.closest('tr');
     if (checkbox.checked) {
         row.classList.add('marked');
     } else {
         row.classList.remove('marked');
-    }
-}
-
-function updateMoney(index, newValue) {
-    appData[index].money = newValue;
-    saveToStorage();
-}
-
-function updateName(index, newName) {
-    appData[index].name = newName;
-    saveToStorage();
-}
-
-function addNewRow() {
-    appData.push({ name: "", money: "-", marked: false });
-    saveToStorage();
-    
-    // Khi thêm người mới, tự động mở chế độ chỉnh sửa để người dùng nhập tên luôn
-    isEditMode = true;
-    const btn = document.getElementById("editModeBtn");
-    btn.innerText = "💾 Hoàn thành";
-    btn.classList.add("active");
-    
-    renderTable();
-    
-    const rows = document.getElementById("tableBody").getElementsByTagName("tr");
-    if(rows.length > 0) {
-        rows[rows.length - 1].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-}
-
-function resetAllData() {
-    if (confirm("Xóa hết chỉnh sửa để quay về danh sách mặc định gốc?")) {
-        localStorage.removeItem('quanly_tienxe_data');
-        isEditMode = false;
-        document.getElementById("editModeBtn").innerText = "✏️ Chỉnh sửa";
-        document.getElementById("editModeBtn").classList.remove("active");
-        initData();
     }
 }
 
@@ -357,9 +290,7 @@ function filterTable() {
     for (let i = 1; i < tr.length; i++) {
         const tdName = tr[i].getElementsByClassName("name-cell")[0];
         if (tdName) {
-            const inputField = tdName.querySelector('.input-name');
-            const txtValue = inputField ? inputField.value : (tdName.textContent || tdName.innerText);
-            
+            const txtValue = tdName.textContent || tdName.innerText;
             if (txtValue.toUpperCase().indexOf(filter) > -1) {
                 tr[i].style.display = "";
                 hasData = true;
@@ -371,7 +302,7 @@ function filterTable() {
     document.getElementById("noData").style.display = hasData ? "none" : "block";
 }
 
-window.onload = initData;
+window.onload = fetchSheetsData;
 </script>
 
 </body>
