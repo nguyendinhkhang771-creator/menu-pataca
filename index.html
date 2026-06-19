@@ -91,10 +91,7 @@
             font-size: 13px;
             letter-spacing: 0.5px;
         }
-        tr.marked {
-            background-color: #fff9db !important;
-        }
-        /* Style tạo khác biệt hoàn toàn cho dòng của người có chữ (bỏ) */
+        /* Style màu nền xám phân biệt cho những người có chữ (bỏ) */
         tr.omitted-row {
             background-color: #f5f6fa !important;
             color: #95a5a6;
@@ -106,17 +103,11 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 10px;
-            min-height: 24px; /* Giữ khung cố định kể cả khi mất ô tích */
         }
         .txt-money {
             font-weight: bold;
             color: #e67e22;
-        }
-        .checkbox-mark {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
+            font-size: 16px;
         }
         .no-data {
             text-align: center;
@@ -137,7 +128,7 @@
 
 <div class="container">
     <h2>Danh Sách Đăng Ký Tra Cứu</h2>
-    <p class="subtitle">Dữ liệu tự động đồng bộ từ Google Sheets - Đánh dấu trạng thái lưu tại trình duyệt</p>
+    <p class="subtitle">Dữ liệu tự động đồng bộ từ Google Sheets</p>
     
     <div class="action-bar">
         <input type="text" id="searchInput" class="search-box" onkeyup="filterTable()" placeholder="Nhập tên thành viên cần tìm nhanh...">
@@ -151,8 +142,8 @@
             <thead>
                 <tr>
                     <th style="width: 15%;">STT</th>
-                    <th style="width: 45%;">Họ và Tên</th>
-                    <th style="width: 40%; text-align: right;">Đánh dấu / Tiền Xe</th>
+                    <th style="width: 50%;">Họ và Tên</th>
+                    <th style="width: 35%; text-align: right;">Tiền Xe</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -205,6 +196,28 @@ function splitCsvLine(line) {
     return result;
 }
 
+// Hàm loại bỏ dấu tiếng Việt để tìm kiếm chính xác hơn
+function removeVietnameseTones(str) {
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g,"i");
+    str = str.replace(/ò|ó|ọ|ỏ|ã|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g,"o");
+    str = str.replace(/ù|á|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g,"u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g,"y");
+    str = str.replace(/đ/g,"d");
+    str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+    str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+    str = str.replace(/Ì|Í|Ị|ỉ|Ĩ/g, "I");
+    str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+    str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+    str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+    str = str.replace(/Đ/g, "D");
+    // Một vài bộ cải tiến thêm nếu cần thiết
+    str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // Huyền sắc hỏi ngã nặng 
+    str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // Â, Ă, Ơ, Ư
+    return str;
+}
+
 function parseCsvData(csvText) {
     const lines = csvText.split("\n");
     if (lines.length <= 1) return;
@@ -217,7 +230,6 @@ function parseCsvData(csvText) {
     let moneyIndex = headers.findIndex(h => h.toLowerCase().includes("tiền") || h.toLowerCase().includes("xe"));
     if (moneyIndex === -1 || moneyIndex === nameIndex) moneyIndex = headers.length - 1;
 
-    const savedMarks = JSON.parse(localStorage.getItem('quanly_tienxe_marks') || '{}');
     appData = [];
 
     for (let i = 1; i < lines.length; i++) {
@@ -231,15 +243,13 @@ function parseCsvData(csvText) {
         if (!money) money = "-";
 
         if (name) {
-            // Nhận diện thông minh: (bỏ), ( bỏ), (bỏ ), ( bỏ ) công thức RegExp gọn gàng
+            // Nhận diện người có chữ (bỏ) để đổi màu nền dòng cho dễ nhận biết
             let isOmitted = /\(\s*bỏ\s*\)/i.test(name);
-            let isMarked = isOmitted ? false : (savedMarks[name] || false);
 
             appData.push({
                 name: name,
                 money: money,
-                marked: isMarked,
-                isOmitted: isOmitted // Lưu trạng thái để phục vụ logic ẩn nút tích
+                isOmitted: isOmitted
             });
         }
     }
@@ -256,23 +266,16 @@ function renderTable() {
     appData.forEach((item, index) => {
         const tr = document.createElement("tr");
         
+        // Nếu tên chứa chữ (bỏ) thì chuyển dòng thành màu xám nhạt
         if (item.isOmitted) {
-            tr.classList.add('omitted-row'); // Áp dụng nền xám riêng biệt
-        } else if (item.marked) {
-            tr.classList.add('marked'); // Nền vàng nếu tích chọn thông thường
+            tr.classList.add('omitted-row');
         }
-        
-        // Logic ẩn dấu tích hoàn toàn cho dòng có chữ (bỏ)
-        let checkboxHtml = item.isOmitted 
-            ? '' 
-            : `<input type="checkbox" class="checkbox-mark" ${item.marked ? 'checked' : ''} onchange="toggleMark(${index}, this)">`;
 
         tr.innerHTML = `
             <td>${index + 1}</td>
             <td class="name-cell">${item.name}</td>
             <td>
                 <div class="money-container">
-                    ${checkboxHtml}
                     <span class="txt-money">${item.money}</span>
                 </div>
             </td>
@@ -281,23 +284,9 @@ function renderTable() {
     });
 }
 
-function toggleMark(index, checkbox) {
-    appData[index].marked = checkbox.checked;
-    const savedMarks = JSON.parse(localStorage.getItem('quanly_tienxe_marks') || '{}');
-    savedMarks[appData[index].name] = checkbox.checked;
-    localStorage.setItem('quanly_tienxe_marks', JSON.stringify(savedMarks));
-
-    const row = checkbox.closest('tr');
-    if (checkbox.checked) {
-        row.classList.add('marked');
-    } else {
-        row.classList.remove('marked');
-    }
-}
-
 function filterTable() {
     const input = document.getElementById("searchInput");
-    const filter = input.value.toUpperCase().trim();
+    const filter = removeVietnameseTones(input.value.toUpperCase().trim());
     const table = document.getElementById("dataTable");
     const tr = table.getElementsByTagName("tr");
     let hasData = false;
@@ -305,7 +294,7 @@ function filterTable() {
     for (let i = 1; i < tr.length; i++) {
         const tdName = tr[i].getElementsByClassName("name-cell")[0];
         if (tdName) {
-            const txtValue = tdName.textContent || tdName.innerText;
+            const txtValue = removeVietnameseTones(tdName.textContent || tdName.innerText);
             if (txtValue.toUpperCase().indexOf(filter) > -1) {
                 tr[i].style.display = "";
                 hasData = true;
